@@ -1,0 +1,16 @@
+# OpenAI API Configuration (if using real LLM)
+OPENAI_API_KEY=your_openai_api_key_here
+
+# Application Configuration
+STORAGE_PATH=./memory_storage
+LOG_LEVEL=INFO
+
+# Database Configuration (for external memory store - optional)
+# DATABASE_URL=postgresql://user:password@localhost/supportdb
+
+# API Configuration
+API_HOST=localhost
+API_PORT=8000
+
+# Security
+SECRET_KEY=your_secret_key_here
