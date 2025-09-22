@@ -288,41 +288,185 @@ Test the agent with various queries:
 
 ### Local Deployment
 
-1. Ensure virtual environment is activated
-2. Run the application:
-```bash
-# CLI version
-python main.py
+#### Prerequisites
+- Python 3.8 or higher
+- Git (for cloning the repository)
+- OpenAI API key
 
-# Web UI version
+#### Step-by-Step Local Setup
+
+1. **Clone the Repository**
+```bash
+git clone https://github.com/miloauguste/AgenticAI-Module4.git
+cd AgenticAI-Module4
+```
+
+2. **Create and Activate Virtual Environment**
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# macOS/Linux
+python -m venv venv
+source venv/bin/activate
+```
+
+3. **Install Dependencies**
+```bash
+pip install -r requirements_file.txt
+```
+
+4. **Configure Environment Variables**
+```bash
+# Create .env file
+copy .env.template .env   # Windows
+cp .env.template .env     # macOS/Linux
+```
+
+Edit `.env` file with your configuration:
+```env
+OPENAI_API_KEY=your_actual_openai_api_key_here
+STORAGE_PATH=./memory_storage
+```
+
+5. **Run the Application**
+
+**CLI Version:**
+```bash
+python main.py
+```
+
+**Web UI Version:**
+```bash
 streamlit run app.py
 ```
 
-### Community Cloud Deployment
+The web interface will be available at `http://localhost:8501`
 
-1. Create a GitHub repository with your code
-2. Push to GitHub:
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git remote add origin <your-repo-url>
-git push -u origin main
-```
+#### Local Testing
+Test with sample queries:
+- "How do I reset my password?"
+- "I need help with billing"
+- "I want to cancel my subscription" (triggers HITL)
 
-3. Deploy on Streamlit Community Cloud:
-   - Visit share.streamlit.io
-   - Connect GitHub repository
-   - Configure environment variables in secrets
-   - Deploy
+### Streamlit Cloud Deployment
 
-### Environment Variables for Deployment
+#### Prerequisites
+- GitHub account
+- Streamlit Community Cloud account (free)
+- OpenAI API key
 
-Add to Streamlit secrets:
+#### Step-by-Step Cloud Deployment
+
+1. **Fork or Clone the Repository**
+   - Visit: https://github.com/miloauguste/AgenticAI-Module4.git
+   - Fork the repository to your GitHub account, or clone and push to your own repository
+
+2. **Access Streamlit Community Cloud**
+   - Go to https://share.streamlit.io
+   - Sign in with your GitHub account
+
+3. **Deploy New App**
+   - Click "New app"
+   - Choose your GitHub repository: `https://github.com/miloauguste/AgenticAI-Module4.git`
+   - Set main file path: `app.py`
+   - Set app URL (optional): `your-custom-name` (will become your-custom-name.streamlit.app)
+
+4. **Configure Secrets**
+   Click "Advanced settings" → "Secrets" and add:
+   ```toml
+   [general]
+   OPENAI_API_KEY = "your_actual_openai_api_key_here"
+   STORAGE_PATH = "./memory_storage"
+   ```
+
+5. **Deploy**
+   - Click "Deploy!"
+   - Wait for deployment to complete (usually 2-3 minutes)
+   - Your app will be available at: `https://your-app-name.streamlit.app`
+
+#### Streamlit Cloud Configuration Tips
+
+**App Settings:**
+- **Repository**: `https://github.com/miloauguste/AgenticAI-Module4.git`
+- **Branch**: `main`
+- **Main file path**: `app.py`
+- **Python version**: 3.9 (recommended)
+
+**Required Secrets:**
 ```toml
-OPENAI_API_KEY = "your_api_key"
+# In Streamlit Cloud → App settings → Secrets
+OPENAI_API_KEY = "sk-your-actual-key-here"
 STORAGE_PATH = "./memory_storage"
 ```
+
+**Optional Advanced Settings:**
+```toml
+# Additional configuration if needed
+[tool.streamlit]
+server.maxUploadSize = 50
+server.enableWebsocketCompression = true
+```
+
+### Deployment Verification
+
+#### Local Verification
+1. Open browser to `http://localhost:8501`
+2. Initialize session with User ID: `test_user` and Thread ID: `session_001`
+3. Test basic query: "How do I reset my password?"
+4. Test HITL query: "I need a refund" (should trigger human review)
+5. Check console logs for any errors
+
+#### Cloud Verification
+1. Visit your deployed app URL
+2. Verify all features work:
+   - Session initialization
+   - Message processing
+   - Memory persistence
+   - HITL workflow
+3. Check Streamlit Cloud logs for any deployment issues
+
+### Environment Variables Reference
+
+| Variable | Local (.env) | Cloud (Secrets) | Description |
+|----------|-------------|-----------------|-------------|
+| `OPENAI_API_KEY` | Required | Required | Your OpenAI API key |
+| `STORAGE_PATH` | Optional | Optional | Memory storage directory |
+
+### Troubleshooting Deployment
+
+#### Local Issues
+```bash
+# Dependencies issues
+pip install -r requirements_file.txt --force-reinstall
+
+# Port conflicts
+streamlit run app.py --server.port 8502
+
+# Environment issues
+# Ensure virtual environment is activated
+source venv/bin/activate  # or venv\Scripts\activate on Windows
+```
+
+#### Cloud Issues
+- **Build failures**: Check `requirements_file.txt` for correct package names
+- **Import errors**: Verify all files are committed to GitHub
+- **API key errors**: Double-check secrets configuration
+- **Memory issues**: Cloud has storage limitations; consider external DB for production
+
+### Performance Considerations
+
+#### Local Performance
+- Memory usage scales with conversation history
+- Recommended for development and testing
+
+#### Cloud Performance
+- Free tier limitations:
+  - 1 GB RAM
+  - Shared CPU
+  - App hibernates after inactivity
+- Consider Streamlit for Teams for production use
 
 ## 🔒 Security
 
